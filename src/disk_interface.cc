@@ -146,6 +146,10 @@ bool RealDiskInterface::WriteFile(const string& path, const string& contents) {
 
 bool RealDiskInterface::MakeDir(const string& path) {
   if (::MakeDir(path) < 0) {
+    if (errno == EEXIST) {
+      errno = ESUCCESS;
+      return true;
+    }
     Error("mkdir(%s): %s", path.c_str(), strerror(errno));
     return false;
   }
